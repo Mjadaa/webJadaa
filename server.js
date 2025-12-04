@@ -21,7 +21,14 @@ try {
 }
 
 // Routes
-app.use('/api/products', require('./routes/product.routes'));
+if (!startupError) {
+    try {
+        app.use('/api/products', require('./routes/product.routes'));
+    } catch (err) {
+        console.error("Failed to load routes:", err);
+        startupError = err;
+    }
+}
 
 // simple route
 app.get("/", (req, res) => {
