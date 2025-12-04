@@ -24,6 +24,19 @@ app.get("/", (req, res) => {
     res.json({ message: "Welcome to JadaaMart API." });
 });
 
+// Debug route to check env vars (Remove in production later)
+app.get("/api/debug-env", (req, res) => {
+    res.json({
+        node_env: process.env.NODE_ENV,
+        db_host: process.env.DB_HOST ? "Set" : "Not Set",
+        db_user: process.env.DB_USER ? "Set" : "Not Set",
+        db_username: process.env.DB_USERNAME ? "Set" : "Not Set",
+        db_pass: process.env.DB_PASSWORD ? "Set" : "Not Set",
+        db_name: process.env.DB_NAME ? "Set" : "Not Set",
+        db_port: process.env.DB_PORT ? "Set" : "Not Set",
+    });
+});
+
 // Check DB connection
 db.sequelize.authenticate()
     .then(() => {
