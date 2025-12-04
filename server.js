@@ -1,7 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const db = require('./models');
-
 const app = express();
 
 var corsOptions = {
@@ -9,22 +7,35 @@ var corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-// parse requests of content-type - application/json
 app.use(express.json());
-
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+
+let db;
+let startupError = null;
+
+try {
+    db = require('./models');
+} catch (err) {
+    console.error("Failed to load models:", err);
+    startupError = err;
+}
 
 // Routes
 app.use('/api/products', require('./routes/product.routes'));
 
 // simple route
 app.get("/", (req, res) => {
+    if (startupError) {
+        return res.status(500).json({
+            message: "Server started with errors",
+            error: startupError.message,
+            stack: startupError.stack
+        });
+    }
     res.json({ message: "Welcome to JadaaMart API." });
 });
 
-// Debug route to check env vars (Remove in production later)
+// Debug route to check env vars
 app.get("/api/debug-env", (req, res) => {
     res.json({
         node_env: process.env.NODE_ENV,
@@ -34,17 +45,20 @@ app.get("/api/debug-env", (req, res) => {
         db_pass: process.env.DB_PASSWORD ? "Set" : "Not Set",
         db_name: process.env.DB_NAME ? "Set" : "Not Set",
         db_port: process.env.DB_PORT ? "Set" : "Not Set",
+        startup_error: startupError ? startupError.message : "None"
     });
 });
 
-// Check DB connection
-db.sequelize.authenticate()
-    .then(() => {
-        console.log('Connection has been established successfully.');
-    })
-    .catch(err => {
-        console.error('Unable to connect to the database:', err);
-    });
+// Check DB connection if models loaded
+if (db) {
+    db.sequelize.authenticate()
+        .then(() => {
+            console.log('Connection has been established successfully.');
+        })
+        .catch(err => {
+            console.error('Unable to connect to the database:', err);
+        });
+}
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
