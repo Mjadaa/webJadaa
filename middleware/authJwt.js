@@ -21,8 +21,7 @@ verifyToken = (req, res, next) => {
     });
 };
 
-    });
-};
+
 
 isAdmin = (req, res, next) => {
     // For simplicity in this demo, we'll check if username is 'admin'
