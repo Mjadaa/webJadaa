@@ -171,67 +171,53 @@
             padding: 2rem;
             color: var(--text-muted);
         }
-    </style>
-</head>
 
-<body>
-    <header>
-        <div class="logo">JadaaMart</div>
-        <nav>
-            <!-- Add nav items if needed -->
-        </nav>
-    </header>
+        <p>Explore our curated collection of electronics,
+        fashion,
+        and more. Powered by JadaaMart API.</p></section><div id="products-grid" class="grid"><div class="loading">Loading products...</div></div></div><script>async function fetchProducts() {
+            const grid=document.getElementById('products-grid');
 
-    <div class="container">
-        <section class="hero">
-            <h1>Discover Premium<br>Quality Products</h1>
-            <p>Explore our curated collection of electronics, fashion, and more. Powered by JadaaMart API.</p>
-        </section>
-
-        <div id="products-grid" class="grid">
-            <div class="loading">Loading products...</div>
-        </div>
-    </div>
-
-    <script>
-        async function fetchProducts() {
-            const grid = document.getElementById('products-grid');
             try {
-                const response = await fetch('/api/products');
-                const products = await response.json();
+                const response=await fetch('/api/products');
+                const products=await response.json();
 
-                if (products.length === 0) {
-                    grid.innerHTML = '<div class="loading">No products found.</div>';
+                if (products.length===0) {
+                    grid.innerHTML='<div class="loading">No products found.</div>';
                     return;
                 }
 
-                grid.innerHTML = products.map(product => `
-                    <div class="card">
-                        <div class="card-img">
-                            <!-- Placeholder for image, using first letter of name -->
-                            ${product.image && !product.image.includes('placeholder') ?
-                        `<img src="${product.image}" alt="${product.name}" onerror="this.parentElement.innerText='${product.name[0]}'"/>` :
-                        product.name[0]}
-                        </div>
-                        <div class="card-body">
-                            <span class="category">${product.Category ? product.Category.name : 'Product'}</span>
-                            <h3 class="card-title">${product.name}</h3>
-                            <p class="card-desc">${product.description}</p>
-                            <div class="card-footer">
-                                <span class="price">$${product.price}</span>
-                                <a href="#" class="btn">Add to Cart</a>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
+                grid.innerHTML=products.map(product=> ` <div class="card" > <div class="card-img" > < !-- Placeholder for image, using first letter of name --> $ {
+                        product.image && !product.image.includes('placeholder') ? `<img src="${product.image}" alt="${product.name}" onerror="this.parentElement.innerText='${product.name[0]}'" />` : product.name[0]
+                    }
 
-            } catch (error) {
-                grid.innerHTML = `<div class="loading" style="color: #ef4444">Failed to load products: ${error.message}</div>`;
+                    </div> <div class="card-body" > <span class="category" >$ {
+                        product.Category ? product.Category.name : 'Product'
+                    }
+
+                    </span> <h3 class="card-title" >$ {
+                        product.name
+                    }
+
+                    </h3> <p class="card-desc" >$ {
+                        product.description
+                    }
+
+                    </p> <div class="card-footer" > <span class="price" >$$ {
+                        product.price
+                    }
+
+                    </span> <a href="#" class="btn" >Add to Cart</a> </div> </div> </div> `).join('');
+
+            }
+
+            catch (error) {
+                grid.innerHTML=`<div class="loading" style="color: #ef4444">Failed to load products: $ {
+                    error.message
+                }
+
+                </div>`;
             }
         }
 
         fetchProducts();
-    </script>
-</body>
-
-</html>
+        </script></body></html>
