@@ -88,6 +88,24 @@ app.get("/api/sync", async (req, res) => {
     }
 });
 
+// Promote User to Admin Route
+app.get("/api/promote", async (req, res) => {
+    if (!db) return res.status(500).json({ message: "Database not loaded" });
+    const username = req.query.username;
+    if (!username) return res.status(400).json({ message: "Username is required" });
+
+    try {
+        const user = await db.User.findOne({ where: { username: username } });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        user.role = 'admin';
+        await user.save();
+        res.json({ message: `Success! User '${username}' is now an Admin.` });
+    } catch (err) {
+        res.status(500).json({ message: "Error promoting user", error: err.message });
+    }
+});
+
 // Seeding Route (Populate Data)
 app.get("/api/seed", async (req, res) => {
     if (!db) return res.status(500).json({ message: "Database not loaded" });
