@@ -56,6 +56,17 @@ app.get("/api/debug-env", (req, res) => {
     });
 });
 
+// Manual Sync Route (to fix missing tables)
+app.get("/api/sync", async (req, res) => {
+    if (!db) return res.status(500).json({ message: "Database not loaded" });
+    try {
+        await db.sequelize.sync({ alter: true });
+        res.json({ message: "Database synced successfully! Tables created." });
+    } catch (err) {
+        res.status(500).json({ message: "Sync failed", error: err.message });
+    }
+});
+
 // Check DB connection if models loaded
 // Sync DB and create tables if missing
 if (db) {
