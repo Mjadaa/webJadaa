@@ -68,6 +68,58 @@ app.get("/api/sync", async (req, res) => {
     }
 });
 
+// Seeding Route (Populate Data)
+app.get("/api/seed", async (req, res) => {
+    if (!db) return res.status(500).json({ message: "Database not loaded" });
+    try {
+        const Category = db.Category;
+        const Product = db.Product;
+
+        // Check if data exists
+        const count = await Product.count();
+        if (count > 0) return res.json({ message: "Database already has data." });
+
+        // Create Categories
+        const electronics = await Category.create({ name: 'Electronics', description: 'Gadgets and devices' });
+        const fashion = await Category.create({ name: 'Fashion', description: 'Clothing and accessories' });
+
+        // Create Products
+        await Product.bulkCreate([
+            {
+                name: 'iPhone 15 Pro',
+                slug: 'iphone-15-pro',
+                description: 'The ultimate iPhone.',
+                price: 999.00,
+                stock: 10,
+                category_id: electronics.id,
+                image: 'iphone15.png'
+            },
+            {
+                name: 'Samsung Galaxy S24',
+                slug: 'samsung-galaxy-s24',
+                description: 'Galaxy AI is here.',
+                price: 899.00,
+                stock: 15,
+                category_id: electronics.id,
+                image: 's24.png'
+            },
+            {
+                name: 'Men T-Shirt',
+                slug: 'men-t-shirt',
+                description: 'Cotton t-shirt.',
+                price: 25.00,
+                stock: 50,
+                category_id: fashion.id,
+                image: 'tshirt.png'
+            }
+        ]);
+
+        res.json({ message: "Database seeded successfully!" });
+    } catch (err) {
+        res.status(500).json({ message: "Seeding failed", error: err.message });
+    }
+});
+
 // Check DB connection if models loaded
 // Sync DB and create tables if missing
 if (db) {
