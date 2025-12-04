@@ -79,9 +79,10 @@ app.get("/api/debug-env", (req, res) => {
 app.get("/api/sync", async (req, res) => {
     if (!db) return res.status(500).json({ message: "Database not loaded" });
     try {
-        // Reverted to alter: true to prevent accidental data loss
-        await db.sequelize.sync({ alter: true });
-        res.json({ message: "Database synced successfully! Schema updated." });
+        const force = req.query.force === 'true';
+        // If force=true, we drop tables and recreate them. BE CAREFUL!
+        await db.sequelize.sync({ alter: !force, force: force });
+        res.json({ message: `Database synced successfully! Schema updated. (Force: ${force})` });
     } catch (err) {
         res.status(500).json({ message: "Sync failed", error: err.message });
     }
