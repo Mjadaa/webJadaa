@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | JadaaMart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #4f46e5;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--card-bg);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            color: white;
+            font-family: inherit;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">JadaaMart Admin</div>
+        <button onclick="logout()" class="btn btn-danger">Logout</button>
+    </header>
+
+    <div class="container">
+        <div class="header-actions">
+            <h2>Product Management</h2>
+            <button onclick="openModal()" class="btn">Add New Product</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="product-list">
+                <!-- Products will be loaded here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 1.5rem;">Add Product</h2>
+            <form id="productForm">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Slug</label>
+                    <input type="text" id="slug" required>
+                </div>
+                <div class="form-group">
+                    <label>Price</label>
+                    <input type="number" id="price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Stock</label>
+                    <input type="number" id="stock" required>
+                </div>
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="text" id="image" value="placeholder.jpg">
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn" style="flex: 1;">Save</button>
+                    <button type="button" onclick="closeModal()" class="btn"
+                        style="background: transparent; border: 1px solid var(--text-muted); flex: 1;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Check Auth
+        const token = localStorage.getItem('token');
+        if (!token) window.location.href = 'login.html';
+
+        async function loadProducts() {
+            const res = await fetch('/api/products');
+            const products = await res.json();
+            const tbody = document.getElementById('product-list');
+
+            tbody.innerHTML = products.map(p => `
+                <tr>
+                    <td>${p.name}</td>
+                    <td>$${p.price}</td>
+                    <td>${p.stock}</td>
+                    <td>
+                        <button onclick="deleteProduct(${p.id})" class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm('Are you sure?')) return;
+
+            const res = await fetch(`/api/products/${id}`, {
+                method: 'DELETE',
+                headers: { 'x-access-token': token }
+            });
+
+            if (res.ok) loadProducts();
+            else alert('Failed to delete');
+        }
+
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('name').value,
+                slug: document.getElementById('slug').value,
+                price: document.getElementById('price').value,
+                stock: document.getElementById('stock').value,
+                image: document.getElementById('image').value,
+                category_id: 1 // Default to Electronics for now
+            };
+
+            const res = await fetch('/api/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': token
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                closeModal();
+                loadProducts();
+            } else {
+                alert('Failed to save product');
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        }
+
+        function openModal() { document.getElementById('productModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('productModal').style.display = 'none'; }
+
+        loadProducts();
+    </script>
+</body>
+
+</html>

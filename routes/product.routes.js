@@ -32,4 +32,46 @@ router.get('/:slug', async (req, res) => {
     }
 });
 
+const { authJwt } = require("../middleware");
+
+// POST create new product (Admin only)
+router.post('/', [authJwt.verifyToken, authJwt.isAdmin], async (req, res) => {
+    try {
+        const product = await Product.create(req.body);
+        res.status(201).json(product);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// PUT update product (Admin only)
+router.put('/:id', [authJwt.verifyToken, authJwt.isAdmin], async (req, res) => {
+    try {
+        const id = req.params.id;
+        const [num] = await Product.update(req.body, { where: { id: id } });
+        if (num == 1) {
+            res.send({ message: "Product was updated successfully." });
+        } else {
+            res.send({ message: `Cannot update Product with id=${id}. Maybe Product was not found or req.body is empty!` });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// DELETE product (Admin only)
+router.delete('/:id', [authJwt.verifyToken, authJwt.isAdmin], async (req, res) => {
+    try {
+        const id = req.params.id;
+        const num = await Product.destroy({ where: { id: id } });
+        if (num == 1) {
+            res.send({ message: "Product was deleted successfully!" });
+        } else {
+            res.send({ message: `Cannot delete Product with id=${id}. Maybe Product was not found!` });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 module.exports = router;
