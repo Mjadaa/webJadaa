@@ -57,13 +57,14 @@ app.get("/api/debug-env", (req, res) => {
 });
 
 // Check DB connection if models loaded
+// Sync DB and create tables if missing
 if (db) {
-    db.sequelize.authenticate()
+    db.sequelize.sync({ alter: true })
         .then(() => {
-            console.log('Connection has been established successfully.');
+            console.log('Database synced successfully.');
         })
         .catch(err => {
-            console.error('Unable to connect to the database:', err);
+            console.error('Failed to sync database:', err);
         });
 }
 
