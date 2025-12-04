@@ -10,6 +10,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve static files from 'public' directory
+app.use(express.static('public'));
+
 let db;
 let startupError = null;
 
@@ -39,7 +42,8 @@ app.get("/", (req, res) => {
             stack: startupError.stack
         });
     }
-    res.json({ message: "Welcome to JadaaMart API." });
+    // Serve the index.html file
+    res.sendFile(__dirname + '/public/index.html');
 });
 
 // Debug route to check env vars
