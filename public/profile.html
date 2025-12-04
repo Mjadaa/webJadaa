@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | JadaaMart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #4f46e5;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .profile-card {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        h1 {
+            margin-bottom: 0.5rem;
+        }
+
+        .email {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .info-group {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .value {
+            font-weight: 600;
+        }
+
+        .btn {
+            background: #ef4444;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            font-family: inherit;
+        }
+
+        .btn-home {
+            background: transparent;
+            border: 1px solid var(--text-muted);
+            margin-top: 0.5rem;
+            color: var(--text);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-card">
+        <div class="avatar" id="avatar">U</div>
+        <h1 id="name">User Name</h1>
+        <p class="email" id="email">user@example.com</p>
+
+        <div class="info-group">
+            <span class="label">Username</span>
+            <span class="value" id="username">username</span>
+        </div>
+
+        <div class="info-group">
+            <span class="label">Role</span>
+            <span class="value" id="role">User</span>
+        </div>
+
+        <button onclick="logout()" class="btn">Logout</button>
+        <button onclick="window.location.href='index.html'" class="btn btn-home">Back to Home</button>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) window.location.href = 'login.html';
+
+        document.getElementById('name').textContent = user.full_name || 'User'; // Assuming full_name isn't in token response yet, might need to fetch
+        document.getElementById('email').textContent = user.email;
+        document.getElementById('username').textContent = user.username;
+        document.getElementById('role').textContent = user.role || 'user'; // Role might not be in response, checking controller
+        document.getElementById('avatar').textContent = user.username[0].toUpperCase();
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+
+</html>

@@ -160,6 +160,9 @@
             text-decoration: none;
             font-weight: 600;
             transition: background 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
         }
 
         .btn:hover {
@@ -177,7 +180,7 @@
 <body>
     <header>
         <div class="logo">JadaaMart</div>
-        <nav>
+        <nav id="nav-menu">
             <a href="login.html" class="btn"
                 style="background: transparent; border: 1px solid var(--primary); margin-right: 0.5rem;">Login</a>
             <a href="register.html" class="btn">Register</a>
@@ -196,18 +199,50 @@
     </div>
 
     <script>
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const nav = document.getElementById('nav-menu');
+        const productsGrid = document.getElementById('products-grid');
+
+        // Update Navigation
+        if (token) {
+            nav.innerHTML = `
+                ${user.role === 'admin' ? '<a href="admin.html" class="btn" style="background: transparent; border: 1px solid var(--primary); margin-right: 0.5rem;">Admin Panel</a>' : ''}
+                <a href="profile.html" class="btn" style="background: transparent; border: 1px solid var(--primary); margin-right: 0.5rem;">Profile</a>
+                <button onclick="logout()" class="btn">Logout</button>
+            `;
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
         async function fetchProducts() {
-            const grid = document.getElementById('products-grid');
+            if (!token) {
+                productsGrid.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; background: var(--card-bg); border-radius: 1rem; border: 1px solid rgba(255,255,255,0.05); grid-column: 1 / -1;">
+                        <h2 style="margin-bottom: 1rem;">Login to View Products</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 2rem;">Join JadaaMart to access our exclusive collection.</p>
+                        <a href="login.html" class="btn">Login Now</a>
+                    </div>
+                `;
+                return;
+            }
+
             try {
-                const response = await fetch('/api/products');
+                const response = await fetch('/api/products', {
+                    headers: { 'x-access-token': token }
+                });
                 const products = await response.json();
 
                 if (products.length === 0) {
-                    grid.innerHTML = '<div class="loading">No products found.</div>';
+                    productsGrid.innerHTML = '<div class="loading">No products found.</div>';
                     return;
                 }
 
-                grid.innerHTML = products.map(product => `
+                productsGrid.innerHTML = products.map(product => `
                     <div class="card">
                         <div class="card-img">
                             ${product.image && !product.image.includes('placeholder') ?
@@ -220,14 +255,14 @@
                             <p class="card-desc">${product.description}</p>
                             <div class="card-footer">
                                 <span class="price">$${product.price}</span>
-                                <a href="#" class="btn">Add to Cart</a>
+                                <button class="btn">Add to Cart</button>
                             </div>
                         </div>
                     </div>
                 `).join('');
 
             } catch (error) {
-                grid.innerHTML = `<div class="loading" style="color: #ef4444">Failed to load products: ${error.message}</div>`;
+                productsGrid.innerHTML = `<div class="loading" style="color: #ef4444">Failed to load products: ${error.message}</div>`;
             }
         }
 
