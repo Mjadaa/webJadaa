@@ -5,7 +5,7 @@ const db = require('./models');
 const app = express();
 
 var corsOptions = {
-    origin: "http://localhost:8081"
+    origin: "*" // Allow all for debugging
 };
 
 app.use(cors(corsOptions));
@@ -13,7 +13,6 @@ app.use(cors(corsOptions));
 // parse requests of content-type - application/json
 app.use(express.json());
 
-// parse requests of content-type - application/x-www-form-urlencoded
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
@@ -24,6 +23,15 @@ app.use('/api/products', require('./routes/product.routes'));
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to JadaaMart API." });
 });
+
+// Check DB connection
+db.sequelize.authenticate()
+    .then(() => {
+        console.log('Connection has been established successfully.');
+    })
+    .catch(err => {
+        console.error('Unable to connect to the database:', err);
+    });
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
