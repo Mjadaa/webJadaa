@@ -60,8 +60,9 @@ app.get("/api/debug-env", (req, res) => {
 app.get("/api/sync", async (req, res) => {
     if (!db) return res.status(500).json({ message: "Database not loaded" });
     try {
-        await db.sequelize.sync({ alter: true });
-        res.json({ message: "Database synced successfully! Tables created." });
+        // Using force: true to drop tables and recreate them (Fixes constraint errors)
+        await db.sequelize.sync({ force: true });
+        res.json({ message: "Database synced successfully! Tables recreated." });
     } catch (err) {
         res.status(500).json({ message: "Sync failed", error: err.message });
     }
