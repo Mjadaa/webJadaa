@@ -27,6 +27,7 @@ try {
 if (!startupError) {
     try {
         app.use('/api/products', require('./routes/product.routes'));
+        require('./routes/auth.routes')(app); // Register Auth Routes
     } catch (err) {
         console.error("Failed to load routes:", err);
         startupError = err;
