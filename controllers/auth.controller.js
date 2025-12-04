@@ -62,6 +62,7 @@ exports.signin = async (req, res) => {
             accessToken: token
         });
     } catch (err) {
-        res.status(500).send({ message: err.message });
+        console.error("Signin Error:", err);
+        res.status(500).send({ message: "An internal server error occurred." });
     }
 };
