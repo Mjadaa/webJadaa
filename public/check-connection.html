@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connection Check - Jadaa Emart</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .status-box {
+            background: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            padding: var(--space-lg);
+            margin: var(--space-md) 0;
+            border: 2px solid var(--border-light);
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-sm);
+            margin: var(--space-xs) 0;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-md);
+        }
+
+        .status-ok {
+            color: var(--accent-green);
+            font-weight: 700;
+        }
+
+        .status-error {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        .status-pending {
+            color: #f59e0b;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-container">
+            <a href="/" class="logo">Jadaa Emart</a>
+            <nav>
+                <a href="/" class="btn btn-outline btn-sm">← Back to Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container" style="max-width: 800px; margin: var(--space-xl) auto;">
+        <h1 style="text-align: center; margin-bottom: var(--space-xl);">🔍 اختبار الاتصال</h1>
+
+        <!-- Database Connection -->
+        <div class="status-box">
+            <h2>📊 Database Connection (TiDB Cloud)</h2>
+            <div id="db-status"></div>
+        </div>
+
+        <!-- API Endpoints -->
+        <div class="status-box">
+            <h2>🔌 API Endpoints</h2>
+            <div id="api-status"></div>
+        </div>
+
+        <!-- Environment Variables -->
+        <div class="status-box">
+            <h2>⚙️ Environment Variables</h2>
+            <div id="env-status"></div>
+        </div>
+
+        <!-- GitHub & Vercel -->
+        <div class="status-box">
+            <h2>🚀 Deployment Info</h2>
+            <div id="deploy-status">
+                <div class="status-item">
+                    <span>GitHub Repository:</span>
+                    <a href="https://github.com/Mjadaa/webJadaa" target="_blank" style="color: var(--primary-solid);">
+                        Mjadaa/webJadaa ↗
+                    </a>
+                </div>
+                <div class="status-item">
+                    <span>Vercel URL:</span>
+                    <a href="https://gjadaamart.vercel.app" target="_blank" style="color: var(--primary-solid);">
+                        gjadaamart.vercel.app ↗
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div style="margin-top: var(--space-xl); text-align: center;">
+            <button onclick="runAllTests()" class="btn btn-lg">🔄 إعادة الفحص</button>
+        </div>
+    </div>
+
+    <script>
+        async function checkDatabase() {
+            const container = document.getElementById('db-status');
+            container.innerHTML = '<div class="status-item"><span>جاري الفحص...</span><span class="status-pending">⏳</span></div>';
+
+            try {
+                const response = await fetch('/api/sync');
+                const data = await response.json();
+
+                if (response.ok) {
+                    container.innerHTML = `
+                        <div class="status-item">
+                            <span>Database Connection</span>
+                            <span class="status-ok">✅ متصل</span>
+                        </div>
+                        <div class="status-item">
+                            <span>Message</span>
+                            <span style="font-size: 0.9rem;">${data.message}</span>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(data.message || 'Connection failed');
+                }
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="status-item">
+                        <span>Database Connection</span>
+                        <span class="status-error">❌ غير متصل</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Error</span>
+                        <span style="color: #ef4444; font-size: 0.9rem;">${error.message}</span>
+                    </div>
+                `;
+            }
+        }
+
+        async function checkAPIs() {
+            const container = document.getElementById('api-status');
+            const endpoints = [
+                { name: 'Health Check', url: '/' },
+                { name: 'Debug Env', url: '/api/debug-env' },
+                { name: 'Products API', url: '/api/products' },
+                { name: 'Setup Admin', url: '/api/setup-admin' },
+                { name: 'Reset Admin', url: '/api/reset-admin' }
+            ];
+
+            container.innerHTML = '<div class="status-item"><span>جاري فحص APIs...</span><span class="status-pending">⏳</span></div>';
+
+            let html = '';
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint.url, {
+                        method: 'GET',
+                        headers: endpoint.name === 'Products API' ? { 'x-access-token': 'test' } : {}
+                    });
+
+                    const status = response.ok || response.status === 401 || response.status === 404;
+                    html += `
+                        <div class="status-item">
+                            <span>${endpoint.name}</span>
+                            <span class="${status ? 'status-ok' : 'status-error'}">
+                                ${status ? '✅' : '❌'} ${response.status}
+                            </span>
+                        </div>
+                    `;
+                } catch (error) {
+                    html += `
+                        <div class="status-item">
+                            <span>${endpoint.name}</span>
+                            <span class="status-error">❌ Error</span>
+                        </div>
+                    `;
+                }
+            }
+
+            container.innerHTML = html;
+        }
+
+        async function checkEnvironment() {
+            const container = document.getElementById('env-status');
+            container.innerHTML = '<div class="status-item"><span>جاري الفحص...</span><span class="status-pending">⏳</span></div>';
+
+            try {
+                const response = await fetch('/api/debug-env');
+                const data = await response.json();
+
+                let html = '';
+                const checks = [
+                    { name: 'DB_HOST', value: data.db_host },
+                    { name: 'DB_USERNAME', value: data.db_username || data.db_user },
+                    { name: 'DB_PASSWORD', value: data.db_pass },
+                    { name: 'DB_NAME', value: data.db_name },
+                    { name: 'DB_PORT', value: data.db_port },
+                    { name: 'NODE_ENV', value: data.node_env }
+                ];
+
+                for (const check of checks) {
+                    const isSet = check.value && check.value !== 'Not Set';
+                    html += `
+                        <div class="status-item">
+                            <span>${check.name}</span>
+                            <span class="${isSet ? 'status-ok' : 'status-error'}">
+                                ${isSet ? '✅ مضبوط' : '❌ غير مضبوط'}
+                            </span>
+                        </div>
+                    `;
+                }
+
+                if (data.startup_error && data.startup_error !== 'None') {
+                    html += `
+                        <div class="status-item">
+                            <span>Startup Error</span>
+                            <span class="status-error">⚠️ ${data.startup_error}</span>
+                        </div>
+                    `;
+                }
+
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="status-item">
+                        <span>Environment Check</span>
+                        <span class="status-error">❌ Error: ${error.message}</span>
+                    </div>
+                `;
+            }
+        }
+
+        async function runAllTests() {
+            await Promise.all([
+                checkDatabase(),
+                checkAPIs(),
+                checkEnvironment()
+            ]);
+        }
+
+        // Run tests on page load
+        window.addEventListener('DOMContentLoaded', runAllTests);
+    </script>
+</body>
+
+</html>
