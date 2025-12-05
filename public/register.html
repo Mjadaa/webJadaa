@@ -115,13 +115,15 @@
             }
         }
 
-        // Show Alert
+        // Show Alert - FIXED: Use textContent to prevent HTML injection
         function showAlert(message, type = 'error') {
-            alertContainer.innerHTML = `
-                <div class="alert alert-${type}">
-                    ${message}
-                </div>
-            `;
+            // Create element safely to avoid HTML injection issues
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message; // Use textContent to escape HTML entities
+
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertDiv);
 
             setTimeout(() => {
                 alertContainer.innerHTML = '';
@@ -191,7 +193,9 @@
                     submitBtn.textContent = originalText;
                 }
             } catch (error) {
-                showAlert(i18n.t('messages.error') + ': ' + error.message, 'error');
+                // Don't show error.message to avoid HTML injection
+                showAlert(i18n.t('messages.error'), 'error');
+                console.error('Registration error:', error);
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalText;
             }
