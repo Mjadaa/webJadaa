@@ -162,6 +162,46 @@ app.get("/api/setup-admin", async (req, res) => {
     }
 });
 
+// RESET ADMIN PASSWORD - Visit this if password is wrong
+app.get("/api/reset-admin", async (req, res) => {
+    if (!db) return res.status(500).json({ message: "Database not loaded" });
+
+    try {
+        const bcrypt = require('bcryptjs');
+
+        // Find admin user
+        const admin = await db.User.findOne({
+            where: { username: 'admin' }
+        });
+
+        if (!admin) {
+            return res.status(404).json({
+                message: "Admin user not found!",
+                note: "Please visit /api/setup-admin first"
+            });
+        }
+
+        // Reset password
+        const newPassword = 'Admin@123';
+        admin.password = bcrypt.hashSync(newPassword, 8);
+        admin.role = 'admin';
+        await admin.save();
+
+        res.json({
+            message: "✅ Admin password reset successfully!",
+            username: 'admin',
+            password: newPassword,
+            email: admin.email,
+            note: "Login at /login.html with new password"
+        });
+    } catch (err) {
+        res.status(500).json({
+            message: "Error resetting password",
+            error: err.message
+        });
+    }
+});
+
 // Seeding Route (Populate Data)
 app.get("/api/seed", async (req, res) => {
     if (!db) return res.status(500).json({ message: "Database not loaded" });
