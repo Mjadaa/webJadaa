@@ -16,6 +16,59 @@
 
     <!-- i18n -->
     <script src="/js/i18n.js"></script>
+
+    <style>
+        /* Cart Badge Styles */
+        .cart-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .cart-icon {
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            padding: var(--space-xs) var(--space-sm);
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--secondary-solid);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .rtl .cart-badge {
+            right: auto;
+            left: -5px;
+        }
+    </style>
 </head>
 
 <body>
@@ -26,6 +79,15 @@
 
             <nav id="nav-menu">
                 <button id="lang-toggle" class="btn-outline btn-sm">🇸🇦 العربية</button>
+
+                <!-- Cart Icon -->
+                <div class="cart-container">
+                    <a href="profile.html#cart" class="cart-icon" title="Shopping Cart">
+                        🛒
+                        <span class="cart-badge" id="cart-count">0</span>
+                    </a>
+                </div>
+
                 <a href="login.html" class="btn btn-outline btn-sm" data-i18n="nav.login">Login</a>
                 <a href="register.html" class="btn btn-sm" data-i18n="nav.register">Register</a>
             </nav>
@@ -48,6 +110,12 @@
                     placeholder="Search products..." style="flex: 1; min-width: 250px;" />
                 <select id="category-filter" style="min-width: 180px;">
                     <option value="" data-i18n="search.all_categories">All Categories</option>
+                </select>
+                <select id="sort-select" style="min-width: 150px;">
+                    <option value="newest">Newest First</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="name">Name: A-Z</option>
                 </select>
             </div>
         </section>
@@ -76,35 +144,69 @@
         const productsGrid = document.getElementById('products-grid');
         const searchInput = document.getElementById('search-input');
         const categoryFilter = document.getElementById('category-filter');
+        const sortSelect = document.getElementById('sort-select');
 
         let allProducts = [];
         let categories = [];
 
         // Update Navigation based on auth status
         function updateNavigation() {
+            const langToggle = `<button id="lang-toggle" class="btn-outline btn-sm"></button>`;
+            const cartIcon = `
+                <div class="cart-container">
+                    <a href="${token ? 'profile.html#cart' : 'login.html'}" class="cart-icon" data-i18n-title="cart.title" title="Shopping Cart">
+                        🛒
+                        <span class="cart-badge" id="cart-count">0</span>
+                    </a>
+                </div>
+            `;
+
             if (token) {
                 const isRTL = i18n.isRTL();
-                const langToggle = `<button id="lang-toggle" class="btn-outline btn-sm"></button>`;
                 const adminLink = user.role === 'admin' ?
                     `<a href="admin.html" class="btn btn-outline btn-sm" data-i18n="nav.admin">${i18n.t('nav.admin')}</a>` : '';
 
                 nav.innerHTML = `
                     ${langToggle}
+                    ${cartIcon}
                     ${adminLink}
                     <a href="profile.html" class="btn btn-outline btn-sm" data-i18n="nav.profile">${i18n.t('nav.profile')}</a>
                     <button onclick="logout()" class="btn btn-sm" data-i18n="nav.logout">${i18n.t('nav.logout')}</button>
                 `;
 
-                // Re-setup language toggle after nav update
-                i18n.setupLanguageToggle();
+                updateCartCount();
             } else {
-                const langToggle = `<button id="lang-toggle" class="btn-outline btn-sm"></button>`;
                 nav.innerHTML = `
                     ${langToggle}
+                    ${cartIcon}
                     <a href="login.html" class="btn btn-outline btn-sm" data-i18n="nav.login">${i18n.t('nav.login')}</a>
                     <a href="register.html" class="btn btn-sm" data-i18n="nav.register">${i18n.t('nav.register')}</a>
                 `;
-                i18n.setupLanguageToggle();
+            }
+
+            i18n.setupLanguageToggle();
+        }
+
+        // Update Cart Count
+        async function updateCartCount() {
+            if (!token) return;
+
+            try {
+                const response = await fetch('/api/products/cart', {
+                    headers: { 'x-access-token': token }
+                });
+
+                if (response.ok) {
+                    const cart = await response.json();
+                    const totalItems = cart.items ? cart.items.reduce((sum, item) => sum + item.quantity, 0) : 0;
+                    const badge = document.getElementById('cart-count');
+                    if (badge) {
+                        badge.textContent = totalItems;
+                        badge.style.display = totalItems > 0 ? 'flex' : 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating cart count:', error);
             }
         }
 
@@ -159,12 +261,10 @@
                     headers: { 'x-access-token': token }
                 });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch products');
-                }
+                if (!response.ok) throw new Error('Failed to fetch products');
 
                 allProducts = await response.json();
-                displayProducts(allProducts);
+                filterAndDisplayProducts();
 
             } catch (error) {
                 productsGrid.innerHTML = `
@@ -173,6 +273,37 @@
                     </div>
                 `;
             }
+        }
+
+        function filterAndDisplayProducts() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedCategory = categoryFilter.value;
+            const sortBy = sortSelect.value;
+
+            let filtered = allProducts.filter(product => {
+                const matchesSearch = product.name.toLowerCase().includes(searchTerm) ||
+                    (product.description || '').toLowerCase().includes(searchTerm);
+                const matchesCategory = !selectedCategory || product.category_id == selectedCategory;
+
+                return matchesSearch && matchesCategory;
+            });
+
+            // Sort products
+            filtered.sort((a, b) => {
+                switch (sortBy) {
+                    case 'price-low':
+                        return parseFloat(a.price) - parseFloat(b.price);
+                    case 'price-high':
+                        return parseFloat(b.price) - parseFloat(a.price);
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'newest':
+                    default:
+                        return b.id - a.id;
+                }
+            });
+
+            displayProducts(filtered);
         }
 
         function displayProducts(products) {
@@ -187,8 +318,7 @@
 
             productsGrid.innerHTML = products.map(product => {
                 const categoryName = product.Category ? product.Category.name : i18n.t('product.category');
-                const stockStatus = product.stock > 0 ? i18n.t('product.in_stock') : i18n.t('product.out_of_stock');
-                const stockClass = product.stock > 0 ? 'success' : 'danger';
+                const inStock = product.stock > 0;
 
                 return `
                     <div class="card">
@@ -205,15 +335,15 @@
                             <div class="card-footer">
                                 <span class="price">$${parseFloat(product.price).toFixed(2)}</span>
                                 <button 
-                                    class="btn btn-sm" 
+                                    class="btn btn-sm ${!inStock ? 'btn-disabled' : ''}" 
                                     onclick="addToCart(${product.id})"
-                                    ${product.stock === 0 ? 'disabled' : ''}
+                                    ${!inStock ? 'disabled' : ''}
                                     data-i18n="product.add_to_cart"
                                 >
-                                    ${i18n.t('product.add_to_cart')}
+                                    ${inStock ? i18n.t('product.add_to_cart') : i18n.t('product.out_of_stock')}
                                 </button>
                             </div>
-                            <div style="margin-top: var(--space-sm); font-size: 0.85rem; color: var(--text-muted);">
+                            <div style="margin-top: var(--space-sm); font-size: 0.85rem; color: ${inStock ? 'var(--accent-green)' : '#ef4444'};">
                                 <span data-i18n="product.stock">${i18n.t('product.stock')}</span>: ${product.stock}
                             </div>
                         </div>
@@ -245,6 +375,7 @@
 
                 if (response.ok) {
                     showMessage(i18n.t('messages.product_added'), 'success');
+                    updateCartCount();
                 } else {
                     const error = await response.json();
                     showMessage(error.message || i18n.t('messages.error'), 'error');
@@ -254,24 +385,10 @@
             }
         }
 
-        // Search & Filter
-        function filterProducts() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const selectedCategory = categoryFilter.value;
-
-            const filtered = allProducts.filter(product => {
-                const matchesSearch = product.name.toLowerCase().includes(searchTerm) ||
-                    (product.description || '').toLowerCase().includes(searchTerm);
-                const matchesCategory = !selectedCategory || product.category_id == selectedCategory;
-
-                return matchesSearch && matchesCategory;
-            });
-
-            displayProducts(filtered);
-        }
-
-        searchInput.addEventListener('input', filterProducts);
-        categoryFilter.addEventListener('change', filterProducts);
+        // Event Listeners
+        searchInput.addEventListener('input', filterAndDisplayProducts);
+        categoryFilter.addEventListener('change', filterAndDisplayProducts);
+        sortSelect.addEventListener('change', filterAndDisplayProducts);
 
         // Show Message
         function showMessage(message, type = 'info') {
@@ -280,7 +397,8 @@
             alert.textContent = message;
             alert.style.position = 'fixed';
             alert.style.top = '100px';
-            alert.style.right = '20px';
+            alert.style.right = i18n.isRTL() ? 'auto' : '20px';
+            alert.style.left = i18n.isRTL() ? '20px' : 'auto';
             alert.style.zIndex = '9999';
             alert.style.minWidth = '300px';
 
@@ -292,13 +410,17 @@
             }, 3000);
         }
 
-        // Initialize when i18n is ready
+        // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
-            // Wait for i18n to initialize
             await i18n.init();
             updateNavigation();
             await fetchCategories();
             await fetchProducts();
+
+            // Update cart count every 30 seconds
+            if (token) {
+                setInterval(updateCartCount, 30000);
+            }
         });
     </script>
 </body>
