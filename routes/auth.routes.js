@@ -15,5 +15,14 @@ module.exports = function (app) {
         controller.signup
     );
 
+    // Add register as alias for signup (for frontend compatibility)
+    app.post(
+        "/api/auth/register",
+        controller.signup
+    );
+
     app.post("/api/auth/signin", controller.signin);
+
+    // Add login as alias for signin (for frontend compatibility)
+    app.post("/api/auth/login", controller.signin);
 };

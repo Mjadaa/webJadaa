@@ -13,14 +13,12 @@ exports.signup = async (req, res) => {
     try {
         const user = await User.create({
             username: req.body.username,
-            full_name: req.body.full_name,
+            full_name: req.body.full_name || req.body.username, // Use username if full_name not provided
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, 8)
         });
 
-        // Default role = 1 (User)
-        // You can implement role logic here if needed
-
+        // Default role = 'user'
         res.send({ message: "User was registered successfully!" });
     } catch (err) {
         res.status(500).send({ message: err.message });
@@ -59,6 +57,7 @@ exports.signin = async (req, res) => {
             id: user.id,
             username: user.username,
             email: user.email,
+            role: user.role, // Add role for frontend
             accessToken: token
         });
     } catch (err) {
