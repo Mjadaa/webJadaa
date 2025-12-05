@@ -4,142 +4,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile | JadaaMart</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #6366f1;
-            --secondary: #4f46e5;
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-        }
+    <title>Profile | Jadaa Emart</title>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700&display=swap"
+        rel="stylesheet">
 
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
 
-        .profile-card {
-            background: var(--card-bg);
-            padding: 3rem;
-            border-radius: 1rem;
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .avatar {
-            width: 100px;
-            height: 100px;
-            background: var(--primary);
-            border-radius: 50%;
-            margin: 0 auto 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            font-weight: 700;
-        }
-
-        h1 {
-            margin-bottom: 0.5rem;
-        }
-
-        .email {
-            color: var(--text-muted);
-            margin-bottom: 2rem;
-        }
-
-        .info-group {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            text-align: left;
-        }
-
-        .label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            display: block;
-            margin-bottom: 0.25rem;
-        }
-
-        .value {
-            font-weight: 600;
-        }
-
-        .btn {
-            background: #ef4444;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 1rem;
-            font-family: inherit;
-        }
-
-        .btn-home {
-            background: transparent;
-            border: 1px solid var(--text-muted);
-            margin-top: 0.5rem;
-            color: var(--text);
-        }
-    </style>
+    <!-- i18n -->
+    <script src="/js/i18n.js"></script>
 </head>
 
 <body>
-    <div class="profile-card">
-        <div class="avatar" id="avatar">U</div>
-        <h1 id="name">User Name</h1>
-        <p class="email" id="email">user@example.com</p>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="/" class="logo">Jadaa Emart</a>
 
-        <div class="info-group">
-            <span class="label">Username</span>
-            <span class="value" id="username">username</span>
+            <nav id="nav-menu">
+                <button id="lang-toggle" class="btn-outline btn-sm">🇸🇦 العربية</button>
+                <a href="index.html" class="btn btn-outline btn-sm" data-i18n="nav.home">Home</a>
+                <button onclick="logout()" class="btn btn-sm" data-i18n="nav.logout">Logout</button>
+            </nav>
         </div>
+    </header>
 
-        <div class="info-group">
-            <span class="label">Role</span>
-            <span class="value" id="role">User</span>
+    <!-- Main Content -->
+    <div class="container">
+        <div class="form-container" style="max-width: 700px;">
+            <h2 style="text-align: center; margin-bottom: var(--space-lg);" data-i18n="profile.title">My Profile</h2>
+
+            <!-- User Info Card -->
+            <div
+                style="background: var(--bg-secondary); padding: var(--space-lg); border-radius: var(--border-radius-md); margin-bottom: var(--space-lg); border: 1px solid var(--border-light);">
+                <div style="display: grid; gap: var(--space-md);">
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 0.9rem;"
+                            data-i18n="auth.username">Username</label>
+                        <p id="username" style="font-size: 1.25rem; font-weight: 600; margin-top: var(--space-xs);">-
+                        </p>
+                    </div>
+
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 0.9rem;" data-i18n="auth.email">Email</label>
+                        <p id="email" style="font-size: 1.25rem; font-weight: 600; margin-top: var(--space-xs);">-</p>
+                    </div>
+
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 0.9rem;">Role</label>
+                        <p id="role"
+                            style="font-size: 1.25rem; font-weight: 600; margin-top: var(--space-xs); text-transform: capitalize;">
+                            -</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Orders Section -->
+            <div style="margin-top: var(--space-xl);">
+                <h3 style="margin-bottom: var(--space-md);" data-i18n="profile.my_orders">My Orders</h3>
+
+                <div id="orders-container"
+                    style="background: var(--bg-secondary); padding: var(--space-lg); border-radius: var(--border-radius-md); border: 1px solid var(--border-light);">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p data-i18n="messages.loading">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shopping Cart Section -->
+            <div style="margin-top: var(--space-xl);">
+                <h3 style="margin-bottom: var(--space-md);" data-i18n="cart.title">Shopping Cart</h3>
+
+                <div id="cart-container"
+                    style="background: var(--bg-secondary); padding: var(--space-lg); border-radius: var(--border-radius-md); border: 1px solid var(--border-light);">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p data-i18n="messages.loading">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Panel Button -->
+            <div id="admin-section" style="display: none; margin-top: var(--space-xl);">
+                <a href="admin.html" class="btn btn-lg" style="width: 100%;" data-i18n="nav.admin">Admin Panel</a>
+            </div>
+
+            <!-- Logout Button -->
+            <button onclick="logout()" class="btn btn-danger btn-lg" style="width: 100%; margin-top: var(--space-xl);"
+                data-i18n="nav.logout">
+                Logout
+            </button>
         </div>
-
-        <button onclick="logout()" class="btn">Logout</button>
-        <button onclick="window.location.href='index.html'" class="btn btn-home">Back to Home</button>
     </div>
 
     <script>
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (!user) window.location.href = 'login.html';
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-        document.getElementById('name').textContent = user.full_name || 'User'; // Assuming full_name isn't in token response yet, might need to fetch
-        document.getElementById('email').textContent = user.email;
-        document.getElementById('username').textContent = user.username;
-        document.getElementById('role').textContent = user.role || 'user'; // Role might not be in response, checking controller
-        document.getElementById('avatar').textContent = user.username[0].toUpperCase();
+        // Check if logged in
+        if (!token) {
+            window.location.href = 'login.html';
+        }
 
+        // Display User Info
+        function displayUserInfo() {
+            document.getElementById('username').textContent = user.username || 'N/A';
+            document.getElementById('email').textContent = user.email || 'N/A';
+            document.getElementById('role').textContent = user.role || 'customer';
+
+            // Show admin panel button if admin
+            if (user.role === 'admin') {
+                document.getElementById('admin-section').style.display = 'block';
+            }
+        }
+
+        // Load Orders
+        async function loadOrders() {
+            try {
+                const response = await fetch('/api/products/orders', {
+                    headers: { 'x-access-token': token }
+                });
+
+                if (!response.ok) throw new Error('Failed to load orders');
+
+                const orders = await response.json();
+                const container = document.getElementById('orders-container');
+
+                if (orders.length === 0) {
+                    container.innerHTML = `
+                        <p style="text-align: center; color: var(--text-muted);" data-i18n="profile.order_history">
+                            No orders yet
+                        </p>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = orders.map(order => `
+                    <div style="padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--border-radius-sm); margin-bottom: var(--space-sm); border: 1px solid var(--border-light);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+                            <strong>Order #${order.id}</strong>
+                            <span style="color: var(--primary-solid);">$${parseFloat(order.total_amount).toFixed(2)}</span>
+                        </div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem;">
+                            <span>Status: ${order.status}</span>
+                            <span style="margin-left: var(--space-md);">Date: ${new Date(order.createdAt).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('orders-container').innerHTML = `
+                    <p style="text-align: center; color: var(--text-muted);">
+                        ${i18n.t('profile.order_history')}: ${i18n.t('cart.empty')}
+                    </p>
+                `;
+            }
+        }
+
+        // Load Cart
+        async function loadCart() {
+            try {
+                const response = await fetch('/api/products/cart', {
+                    headers: { 'x-access-token': token }
+                });
+
+                if (!response.ok) throw new Error('Failed to load cart');
+
+                const cart = await response.json();
+                const container = document.getElementById('cart-container');
+
+                if (!cart || !cart.items || cart.items.length === 0) {
+                    container.innerHTML = `
+                        <p style="text-align: center; color: var(--text-muted);" data-i18n="cart.empty">
+                            ${i18n.t('cart.empty')}
+                        </p>
+                    `;
+                    return;
+                }
+
+                const total = cart.items.reduce((sum, item) => {
+                    return sum + (parseFloat(item.Product.price) * item.quantity);
+                }, 0);
+
+                container.innerHTML = `
+                    ${cart.items.map(item => `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--border-radius-sm); margin-bottom: var(--space-sm); border: 1px solid var(--border-light);">
+                            <div>
+                                <strong>${item.Product.name}</strong>
+                                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: var(--space-xs);">
+                                    <span data-i18n="cart.quantity">${i18n.t('cart.quantity')}</span>: ${item.quantity}
+                                </p>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="color: var(--primary-solid); font-weight: 700; font-size: 1.25rem;">
+                                    $${(parseFloat(item.Product.price) * item.quantity).toFixed(2)}
+                                </div>
+                                <button onclick="removeFromCart(${item.id})" class="btn btn-danger btn-sm" style="margin-top: var(--space-xs);" data-i18n="cart.remove">
+                                    ${i18n.t('cart.remove')}
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                    
+                    <div style="margin-top: var(--space-lg); padding-top: var(--space-lg); border-top: 2px solid var(--border-medium);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 1.5rem; font-weight: 800;">
+                            <span data-i18n="cart.total">${i18n.t('cart.total')}</span>
+                            <span style="background: var(--secondary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                                $${total.toFixed(2)}
+                            </span>
+                        </div>
+                        <button onclick="checkout()" class="btn btn-lg" style="width: 100%; margin-top: var(--space-md);" data-i18n="cart.checkout">
+                            ${i18n.t('cart.checkout')}
+                        </button>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('cart-container').innerHTML = `
+                    <p style="text-align: center; color: var(--text-muted);" data-i18n="cart.empty">
+                        ${i18n.t('cart.empty')}
+                    </p>
+                `;
+            }
+        }
+
+        // Remove from Cart
+        async function removeFromCart(itemId) {
+            if (!confirm('Remove this item from cart?')) return;
+
+            try {
+                const response = await fetch(`/api/products/cart/${itemId}`, {
+                    method: 'DELETE',
+                    headers: { 'x-access-token': token }
+                });
+
+                if (response.ok) {
+                    await loadCart();
+                    alert(i18n.t('messages.success'));
+                } else {
+                    alert(i18n.t('messages.error'));
+                }
+            } catch (error) {
+                alert(i18n.t('messages.error'));
+            }
+        }
+
+        // Checkout
+        async function checkout() {
+            if (!confirm('Proceed to checkout?')) return;
+
+            try {
+                const response = await fetch('/api/products/checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': token
+                    }
+                });
+
+                if (response.ok) {
+                    alert('Order placed successfully!');
+                    await loadCart();
+                    await loadOrders();
+                } else {
+                    const error = await response.json();
+                    alert(error.message || i18n.t('messages.error'));
+                }
+            } catch (error) {
+                alert(i18n.t('messages.error'));
+            }
+        }
+
+        // Logout
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await i18n.init();
+            displayUserInfo();
+            await loadOrders();
+            await loadCart();
+        });
     </script>
 </body>
 

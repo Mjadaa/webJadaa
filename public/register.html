@@ -4,198 +4,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register | JadaaMart</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #6366f1;
-            --secondary: #4f46e5;
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-        }
+    <title>Register | Jadaa Emart</title>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700&display=swap"
+        rel="stylesheet">
 
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
 
-        .auth-card {
-            background: var(--card-bg);
-            padding: 2.5rem;
-            border-radius: 1rem;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .logo {
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            background: linear-gradient(to right, #818cf8, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        input {
-            width: 100%;
-            padding: 0.75rem;
-            background: #0f172a;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 0.5rem;
-            color: white;
-            font-family: inherit;
-            transition: border-color 0.2s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 0.75rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-family: inherit;
-        }
-
-        .btn:hover {
-            background: var(--secondary);
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .footer a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .error-msg {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-            text-align: center;
-            display: none;
-        }
-
-        .success-msg {
-            color: #22c55e;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-            text-align: center;
-            display: none;
-        }
-    </style>
+    <!-- i18n -->
+    <script src="/js/i18n.js"></script>
 </head>
 
 <body>
-    <div class="auth-card">
-        <div class="logo">JadaaMart</div>
-        <h2 style="text-align: center; margin-bottom: 1.5rem;">Create Account</h2>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="/" class="logo">Jadaa Emart</a>
 
-        <div id="error-msg" class="error-msg"></div>
-        <div id="success-msg" class="success-msg"></div>
+            <nav>
+                <button id="lang-toggle" class="btn-outline btn-sm">🇸🇦 العربية</button>
+                <a href="/" class="btn btn-outline btn-sm" data-i18n="nav.home">Home</a>
+                <a href="login.html" class="btn btn-sm" data-i18n="nav.login">Login</a>
+            </nav>
+        </div>
+    </header>
 
-        <form id="register-form">
-            <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" id="full_name" required>
-            </div>
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" id="username" required>
-            </div>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="email" required>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="password" required>
-            </div>
-            <button type="submit" class="btn">Sign Up</button>
-        </form>
+    <!-- Main Content -->
+    <div class="container">
+        <div class="form-container">
+            <h2 style="text-align: center; margin-bottom: var(--space-lg);" data-i18n="auth.register_title">Create New
+                Account</h2>
 
-        <div class="footer">
-            Already have an account? <a href="login.html">Sign in</a>
+            <div id="alert-container"></div>
+
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="username" data-i18n="auth.username">Username</label>
+                    <input type="text" id="username" name="username" required minlength="3" maxlength="50"
+                        data-i18n-placeholder="auth.username" placeholder="Username" autocomplete="username" />
+                    <small style="color: var(--text-muted); font-size: 0.85rem;">Minimum 3 characters</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" data-i18n="auth.email">Email</label>
+                    <input type="email" id="email" name="email" required data-i18n-placeholder="auth.email"
+                        placeholder="Email" autocomplete="email" />
+                </div>
+
+                <div class="form-group">
+                    <label for="password" data-i18n="auth.password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" required minlength="6"
+                            data-i18n-placeholder="auth.password" placeholder="Password" autocomplete="new-password" />
+                        <button type="button" class="password-toggle" onclick="togglePassword('password')"
+                            data-i18n-title="auth.show_password" title="Show Password">
+                            👁️
+                        </button>
+                    </div>
+                    <small style="color: var(--text-muted); font-size: 0.85rem;">Minimum 6 characters</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password" data-i18n="auth.confirm_password">Confirm Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="confirm-password" name="confirm-password" required
+                            data-i18n-placeholder="auth.confirm_password" placeholder="Confirm Password"
+                            autocomplete="new-password" />
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')"
+                            data-i18n-title="auth.show_password" title="Show Password">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-lg" style="width: 100%; margin-top: var(--space-md);"
+                    data-i18n="auth.register_button">
+                    Register
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: var(--space-lg); color: var(--text-muted);">
+                <span data-i18n="auth.have_account">Already have an account?</span>
+                <a href="login.html"
+                    style="color: var(--primary-solid); margin-left: var(--space-xs); font-weight: 600;"
+                    data-i18n="nav.login">Login</a>
+            </div>
         </div>
     </div>
 
     <script>
-        document.getElementById('register-form').addEventListener('submit', async (e) => {
+        const registerForm = document.getElementById('register-form');
+        const alertContainer = document.getElementById('alert-container');
+
+        // Toggle Password Visibility
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const button = field.nextElementSibling;
+
+            if (field.type === 'password') {
+                field.type = 'text';
+                button.textContent = '🙈';
+                button.title = i18n.t('auth.hide_password');
+            } else {
+                field.type = 'password';
+                button.textContent = '👁️';
+                button.title = i18n.t('auth.show_password');
+            }
+        }
+
+        // Show Alert
+        function showAlert(message, type = 'error') {
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    ${message}
+                </div>
+            `;
+
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        // Handle Registration
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const username = document.getElementById('username').value;
-            const full_name = document.getElementById('full_name').value;
-            const email = document.getElementById('email').value;
+
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
-            const errorDiv = document.getElementById('error-msg');
-            const successDiv = document.getElementById('success-msg');
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            // Client-side validation
+            if (!username || !email || !password || !confirmPassword) {
+                showAlert(i18n.t('messages.fill_all_fields'), 'error');
+                return;
+            }
+
+            if (username.length < 3) {
+                showAlert('Username must be at least 3 characters', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showAlert('Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showAlert(i18n.t('messages.password_mismatch'), 'error');
+                return;
+            }
+
+            // Disable submit button
+            const submitBtn = registerForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <div class="spinner" style="width: 20px; height: 20px; border-width: 2px;"></div>
+                <span>${i18n.t('messages.loading')}</span>
+            `;
 
             try {
-                const response = await fetch('/api/auth/signup', {
+                const response = await fetch('/api/auth/register', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, full_name, email, password })
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, email, password })
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    successDiv.textContent = data.message;
-                    successDiv.style.display = 'block';
-                    errorDiv.style.display = 'none';
-                    setTimeout(() => window.location.href = 'login.html', 2000);
+                    showAlert(i18n.t('messages.register_success'), 'success');
+
+                    // Redirect to login after successful registration
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
                 } else {
-                    errorDiv.textContent = data.message;
-                    errorDiv.style.display = 'block';
-                    successDiv.style.display = 'none';
+                    showAlert(data.message || i18n.t('messages.error'), 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
                 }
-            } catch (err) {
-                errorDiv.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                        <span>Registration failed. Please try again later.</span>
-                    </div>
-                `;
-                errorDiv.style.display = 'block';
+            } catch (error) {
+                showAlert(i18n.t('messages.error') + ': ' + error.message, 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Real-time password match validation
+        document.getElementById('confirm-password').addEventListener('input', function () {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+
+            if (confirmPassword && password !== confirmPassword) {
+                this.style.borderColor = '#ef4444';
+            } else {
+                this.style.borderColor = '';
             }
         });
     </script>

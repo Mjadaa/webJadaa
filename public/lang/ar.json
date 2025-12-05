@@ -1,0 +1,104 @@
+{
+    "nav": {
+        "home": "الرئيسية",
+        "products": "المنتجات",
+        "categories": "الفئات",
+        "cart": "السلة",
+        "login": "تسجيل الدخول",
+        "register": "التسجيل",
+        "logout": "تسجيل الخروج",
+        "profile": "الملف الشخصي",
+        "admin": "لوحة الإدارة"
+    },
+    "hero": {
+        "title": "اكتشف منتجات بجودة مميزة",
+        "subtitle": "استكشف مجموعتنا المختارة من الإلكترونيات والأزياء والمزيد",
+        "shop_now": "تسوق الآن"
+    },
+    "product": {
+        "add_to_cart": "أضف للسلة",
+        "price": "السعر",
+        "stock": "المخزون",
+        "in_stock": "متوفر",
+        "out_of_stock": "غير متوفر",
+        "category": "الفئة",
+        "description": "الوصف",
+        "view_details": "عرض التفاصيل"
+    },
+    "auth": {
+        "login_title": "تسجيل الدخول إلى حسابك",
+        "register_title": "إنشاء حساب جديد",
+        "username": "اسم المستخدم",
+        "email": "البريد الإلكتروني",
+        "password": "كلمة المرور",
+        "confirm_password": "تأكيد كلمة المرور",
+        "login_button": "دخول",
+        "register_button": "تسجيل",
+        "forgot_password": "نسيت كلمة المرور؟",
+        "no_account": "ليس لديك حساب؟",
+        "have_account": "لديك حساب بالفعل؟",
+        "show_password": "إظهار كلمة المرور",
+        "hide_password": "إخفاء كلمة المرور"
+    },
+    "admin": {
+        "dashboard": "لوحة الإدارة",
+        "products": "إدارة المنتجات",
+        "categories": "إدارة الفئات",
+        "orders": "إدارة الطلبات",
+        "users": "إدارة المستخدمين",
+        "add_product": "إضافة منتج",
+        "edit_product": "تعديل منتج",
+        "delete_product": "حذف منتج",
+        "add_category": "إضافة فئة",
+        "product_name": "اسم المنتج",
+        "product_description": "وصف المنتج",
+        "product_price": "سعر المنتج",
+        "product_stock": "كمية المخزون",
+        "product_image": "صورة المنتج",
+        "save": "حفظ",
+        "cancel": "إلغاء",
+        "delete": "حذف",
+        "edit": "تعديل"
+    },
+    "profile": {
+        "title": "ملفي الشخصي",
+        "my_orders": "طلباتي",
+        "order_history": "سجل الطلبات",
+        "settings": "الإعدادات",
+        "logout": "تسجيل الخروج"
+    },
+    "cart": {
+        "title": "سلة التسوق",
+        "empty": "سلتك فارغة",
+        "total": "الإجمالي",
+        "checkout": "إتمام الشراء",
+        "continue_shopping": "متابعة التسوق",
+        "remove": "إزالة",
+        "quantity": "الكمية"
+    },
+    "search": {
+        "placeholder": "ابحث عن المنتجات...",
+        "no_results": "لم يتم العثور على منتجات",
+        "filter": "تصفية",
+        "sort": "ترتيب",
+        "all_categories": "جميع الفئات"
+    },
+    "messages": {
+        "loading": "جاري التحميل...",
+        "success": "تم بنجاح!",
+        "error": "حدث خطأ",
+        "login_required": "يرجى تسجيل الدخول للمتابعة",
+        "login_success": "تم تسجيل الدخول بنجاح!",
+        "register_success": "تم التسجيل بنجاح!",
+        "product_added": "تمت إضافة المنتج إلى السلة",
+        "password_mismatch": "كلمات المرور غير متطابقة",
+        "fill_all_fields": "يرجى ملء جميع الحقول"
+    },
+    "footer": {
+        "about": "من نحن",
+        "contact": "اتصل بنا",
+        "privacy": "سياسة الخصوصية",
+        "terms": "شروط الخدمة",
+        "copyright": "© 2025 جدا إيمارت. جميع الحقوق محفوظة."
+    }
+}

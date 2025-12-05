@@ -4,115 +4,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel | JadaaMart</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title data-i18n="admin.dashboard">Admin Dashboard | Jadaa Emart</title>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <!-- i18n -->
+    <script src="/js/i18n.js"></script>
+
     <style>
-        :root {
-            --primary: #6366f1;
-            --secondary: #4f46e5;
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
             display: flex;
             min-height: 100vh;
         }
 
         .sidebar {
-            width: 250px;
-            background: var(--card-bg);
-            padding: 2rem;
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            width: 280px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border-light);
+            padding: var(--space-lg);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
         }
 
-        .logo {
+        .sidebar .logo {
             font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            background: linear-gradient(to right, #818cf8, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav-link {
+            margin-bottom: var(--space-lg);
             display: block;
-            padding: 0.75rem 1rem;
-            color: var(--text-muted);
             text-decoration: none;
-            border-radius: 0.5rem;
-            margin-bottom: 0.5rem;
-            transition: all 0.2s;
         }
 
-        .nav-link:hover,
-        .nav-link.active {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--primary);
+        .sidebar .nav-link {
+            display: block;
+            padding: var(--space-sm) var(--space-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--border-radius-sm);
+            margin-bottom: var(--space-xs);
+            transition: var(--transition-fast);
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary-solid);
         }
 
         .main-content {
             flex: 1;
-            padding: 2rem;
+            margin-left: 280px;
+            padding: var(--space-lg);
         }
 
-        .header {
+        .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .btn {
-            background: var(--primary);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            font-family: inherit;
-        }
-
-        .btn:hover {
-            background: var(--secondary);
+            margin-bottom: var(--space-xl);
+            flex-wrap: wrap;
+            gap: var(--space-md);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            background: var(--card-bg);
-            border-radius: 1rem;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius-lg);
             overflow: hidden;
+            box-shadow: var(--shadow-md);
         }
 
         th,
         td {
-            padding: 1rem;
+            padding: var(--space-md);
             text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-light);
         }
 
         th {
-            background: rgba(0, 0, 0, 0.2);
-            font-weight: 600;
-            color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
         }
 
         tr:hover {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .modal {
@@ -122,101 +109,159 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             align-items: center;
             justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
         }
 
         .modal-content {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 1rem;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            padding: var(--space-xl);
+            border-radius: var(--border-radius-lg);
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-lg);
         }
 
-        .form-group {
-            margin-bottom: 1rem;
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-solid);
+            cursor: pointer;
+            padding: var(--space-xs) var(--space-sm);
+            font-weight: 600;
+            transition: var(--transition-fast);
         }
 
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-muted);
+        .action-btn:hover {
+            color: var(--primary-light);
         }
 
-        input,
-        textarea,
-        select {
-            width: 100%;
-            padding: 0.75rem;
-            background: #0f172a;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 0.5rem;
-            color: white;
-            font-family: inherit;
+        .action-btn.delete {
+            color: #ef4444;
+        }
+
+        .action-btn.delete:hover {
+            color: #dc2626;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
 
 <body>
+    <!-- Sidebar -->
     <div class="sidebar">
-        <div class="logo">JadaaMart Admin</div>
-        <a href="#" class="nav-link active">Products</a>
-        <a href="index.html" class="nav-link">Back to Store</a>
+        <a href="/" class="logo">Jadaa Emart Admin</a>
+
+        <nav>
+            <button id="lang-toggle" class="btn-outline btn-sm"
+                style="width: 100%; margin-bottom: var(--space-md);">🇸🇦 العربية</button>
+            <a href="#" class="nav-link active" data-i18n="admin.products">Products</a>
+            <a href="#" class="nav-link" onclick="showCategories()" data-i18n="admin.categories">Categories</a>
+            <a href="index.html" class="nav-link" data-i18n="nav.home">Back to Store</a>
+            <a href="profile.html" class="nav-link" data-i18n="nav.profile">Profile</a>
+            <button onclick="logout()" class="btn btn-danger" style="width: 100%; margin-top: var(--space-lg);"
+                data-i18n="nav.logout">Logout</button>
+        </nav>
     </div>
 
+    <!-- Main Content -->
     <div class="main-content">
-        <div class="header">
-            <h1>Products</h1>
-            <button class="btn" onclick="openModal()">+ Add Product</button>
+        <div class="admin-header">
+            <h1 data-i18n="admin.products">Products Management</h1>
+            <button class="btn" onclick="openProductModal()" data-i18n="admin.add_product">+ Add Product</button>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Stock</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="product-table">
-                <!-- Products will be loaded here -->
-            </tbody>
-        </table>
+        <div
+            style="background: var(--bg-card); padding: var(--space-lg); border-radius: var(--border-radius-lg); backdrop-filter: blur(20px); border: 1px solid var(--border-light);">
+            <table>
+                <thead>
+                    <tr>
+                        <th data-i18n="admin.product_name">Name</th>
+                        <th data-i18n="admin.product_price">Price</th>
+                        <th data-i18n="admin.product_stock">Stock</th>
+                        <th data-i18n="product.category">Category</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="product-table">
+                    <tr>
+                        <td colspan="5" style="text-align: center;">
+                            <div class="spinner"></div>
+                            <p data-i18n="messages.loading">Loading...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- Add/Edit Modal -->
+    <!-- Add/Edit Product Modal -->
     <div id="productModal" class="modal">
         <div class="modal-content">
-            <h2 id="modalTitle" style="margin-bottom: 1.5rem;">Add Product</h2>
+            <h2 id="modalTitle" style="margin-bottom: var(--space-lg);" data-i18n="admin.add_product">Add Product</h2>
+
             <form id="productForm">
                 <input type="hidden" id="productId">
+
                 <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" id="name" required>
+                    <label for="name" data-i18n="admin.product_name">Product Name</label>
+                    <input type="text" id="name" required data-i18n-placeholder="admin.product_name">
                 </div>
+
                 <div class="form-group">
-                    <label>Slug</label>
-                    <input type="text" id="slug" required>
+                    <label for="slug">Slug</label>
+                    <input type="text" id="slug" required placeholder="product-slug">
                 </div>
+
                 <div class="form-group">
-                    <label>Price</label>
-                    <input type="number" id="price" step="0.01" required>
+                    <label for="category_id" data-i18n="product.category">Category</label>
+                    <select id="category_id" required>
+                        <option value="">Select category...</option>
+                    </select>
                 </div>
+
                 <div class="form-group">
-                    <label>Stock</label>
-                    <input type="number" id="stock" required>
+                    <label for="price" data-i18n="admin.product_price">Price</label>
+                    <input type="number" id="price" step="0.01" required placeholder="0.00">
                 </div>
+
                 <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="description" rows="3"></textarea>
+                    <label for="stock" data-i18n="admin.product_stock">Stock</label>
+                    <input type="number" id="stock" required placeholder="0">
                 </div>
-                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                    <button type="submit" class="btn" style="flex: 1;">Save</button>
-                    <button type="button" class="btn" onclick="closeModal()"
-                        style="background: #ef4444; flex: 1;">Cancel</button>
+
+                <div class="form-group">
+                    <label for="description" data-i18n="admin.product_description">Description</label>
+                    <textarea id="description" rows="4" data-i18n-placeholder="admin.product_description"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="image" data-i18n="admin.product_image">Image URL</label>
+                    <input type="text" id="image" placeholder="https://...">
+                </div>
+
+                <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-lg);">
+                    <button type="submit" class="btn" style="flex: 1;" data-i18n="admin.save">Save</button>
+                    <button type="button" class="btn btn-danger" onclick="closeProductModal()" style="flex: 1;"
+                        data-i18n="admin.cancel">Cancel</button>
                 </div>
             </form>
         </div>
@@ -226,102 +271,186 @@
         const token = localStorage.getItem('token');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
 
+        // Check admin access
         if (!token || user.role !== 'admin') {
+            alert('Access denied. Admin only.');
             window.location.href = 'index.html';
         }
 
+        let allProducts = [];
+        let categories = [];
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        // Load Categories
+        async function loadCategories() {
+            try {
+                const response = await fetch('/api/products/categories', {
+                    headers: { 'x-access-token': token }
+                });
+                categories = await response.json();
+
+                const categorySelect = document.getElementById('category_id');
+                categorySelect.innerHTML = '<option value="">Select category...</option>' +
+                    categories.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        // Load Products
         async function loadProducts() {
-            const res = await fetch('/api/products');
-            const products = await res.json();
+            try {
+                const response = await fetch('/api/products', {
+                    headers: { 'x-access-token': token }
+                });
+                allProducts = await response.json();
+                displayProducts();
+            } catch (error) {
+                document.getElementById('product-table').innerHTML = `
+                    <tr><td colspan="5" class="alert alert-error">${i18n.t('messages.error')}: ${error.message}</td></tr>
+                `;
+            }
+        }
+
+        function displayProducts() {
             const tbody = document.getElementById('product-table');
 
-            tbody.innerHTML = products.map(p => `
+            if (allProducts.length === 0) {
+                tbody.innerHTML = `
+                    <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No products found</td></tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = allProducts.map(p => `
                 <tr>
-                    <td>${p.name}</td>
-                    <td>$${p.price}</td>
+                    <td><strong>${p.name}</strong></td>
+                    <td>$${parseFloat(p.price).toFixed(2)}</td>
                     <td>${p.stock}</td>
+                    <td>${p.Category ? p.Category.name : 'N/A'}</td>
                     <td>
-                        <button onclick="editProduct(${p.id})" style="color: var(--primary); background: none; border: none; cursor: pointer; margin-right: 1rem;">Edit</button>
-                        <button onclick="deleteProduct(${p.id})" style="color: #ef4444; background: none; border: none; cursor: pointer;">Delete</button>
+                        <button class="action-btn" onclick="editProduct(${p.id})" data-i18n="admin.edit">Edit</button>
+                        <button class="action-btn delete" onclick="deleteProduct(${p.id})" data-i18n="admin.delete">Delete</button>
                     </td>
                 </tr>
             `).join('');
         }
 
+        // Open Product Modal
+        function openProductModal() {
+            document.getElementById('productForm').reset();
+            document.getElementById('productId').value = '';
+            document.getElementById('modalTitle').setAttribute('data-i18n', 'admin.add_product');
+            document.getElementById('modalTitle').textContent = i18n.t('admin.add_product');
+            document.getElementById('productModal').style.display = 'flex';
+        }
+
+        // Close Product Modal
+        function closeProductModal() {
+            document.getElementById('productModal').style.display = 'none';
+        }
+
+        // Edit Product
+        async function editProduct(id) {
+            const product = allProducts.find(p => p.id === id);
+
+            document.getElementById('productId').value = product.id;
+            document.getElementById('name').value = product.name;
+            document.getElementById('slug').value = product.slug;
+            document.getElementById('category_id').value = product.category_id || '';
+            document.getElementById('price').value = product.price;
+            document.getElementById('stock').value = product.stock;
+            document.getElementById('description').value = product.description || '';
+            document.getElementById('image').value = product.image || '';
+
+            document.getElementById('modalTitle').setAttribute('data-i18n', 'admin.edit_product');
+            document.getElementById('modalTitle').textContent = i18n.t('admin.edit_product');
+            document.getElementById('productModal').style.display = 'flex';
+        }
+
+        // Delete Product
+        async function deleteProduct(id) {
+            if (!confirm('Are you sure you want to delete this product?')) return;
+
+            try {
+                const response = await fetch(`/api/products/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'x-access-token': token }
+                });
+
+                if (response.ok) {
+                    await loadProducts();
+                    alert(i18n.t('messages.success'));
+                } else {
+                    alert(i18n.t('messages.error'));
+                }
+            } catch (error) {
+                alert(i18n.t('messages.error') + ': ' + error.message);
+            }
+        }
+
+        // Save Product
         document.getElementById('productForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+
             const id = document.getElementById('productId').value;
             const data = {
                 name: document.getElementById('name').value,
                 slug: document.getElementById('slug').value,
-                price: document.getElementById('price').value,
-                stock: document.getElementById('stock').value,
-                description: document.getElementById('description').value
+                category_id: document.getElementById('category_id').value || null,
+                price: parseFloat(document.getElementById('price').value),
+                stock: parseInt(document.getElementById('stock').value),
+                description: document.getElementById('description').value,
+                image: document.getElementById('image').value
             };
 
             const url = id ? `/api/products/${id}` : '/api/products';
             const method = id ? 'PUT' : 'POST';
 
-            await fetch(url, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-access-token': token
-                },
-                body: JSON.stringify(data)
-            });
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': token
+                    },
+                    body: JSON.stringify(data)
+                });
 
-            closeModal();
-            loadProducts();
+                if (response.ok) {
+                    closeProductModal();
+                    await loadProducts();
+                    alert(i18n.t('messages.success'));
+                } else {
+                    const error = await response.json();
+                    alert(error.message || i18n.t('messages.error'));
+                }
+            } catch (error) {
+                alert(i18n.t('messages.error') + ': ' + error.message);
+            }
         });
 
-        async function deleteProduct(id) {
-            if (confirm('Are you sure?')) {
-                await fetch(`/api/products/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'x-access-token': token }
-                });
-                loadProducts();
-            }
-        }
+        // Auto-generate slug from name
+        document.getElementById('name').addEventListener('input', function () {
+            const slug = this.value.toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
+            document.getElementById('slug').value = slug;
+        });
 
-        function openModal() {
-            document.getElementById('productForm').reset();
-            document.getElementById('productId').value = '';
-            document.getElementById('modalTitle').innerText = 'Add Product';
-            document.getElementById('productModal').style.display = 'flex';
-        }
-
-        async function editProduct(id) {
-            // In a real app, fetch single product details. For now, we reload list or pass data.
-            // Let's fetch the single product to be safe
-            const res = await fetch(`/api/products`); // Ideally /api/products/${slug} but we have ID here. 
-            // The API uses slug for single get, but let's just filter from list for simplicity or fix API later.
-            // Actually, let's just use the list data since we have it, but better to fetch.
-            // Wait, the API has GET /:slug. We don't have GET /:id. 
-            // Let's just find it from the table for now to save a request or implement GET /:id.
-            // I'll implement a quick find from the DOM or re-fetch list.
-
-            // Re-fetching list to find item (not efficient but works)
-            const products = await (await fetch('/api/products')).json();
-            const p = products.find(x => x.id === id);
-
-            document.getElementById('productId').value = p.id;
-            document.getElementById('name').value = p.name;
-            document.getElementById('slug').value = p.slug;
-            document.getElementById('price').value = p.price;
-            document.getElementById('stock').value = p.stock;
-            document.getElementById('description').value = p.description;
-
-            document.getElementById('modalTitle').innerText = 'Edit Product';
-            document.getElementById('productModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('productModal').style.display = 'none';
-        }
-
-        loadProducts();
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await i18n.init();
+            await loadCategories();
+            await loadProducts();
+        });
     </script>
 </body>
 

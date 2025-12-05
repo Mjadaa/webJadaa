@@ -1,0 +1,104 @@
+{
+    "nav": {
+        "home": "Home",
+        "products": "Products",
+        "categories": "Categories",
+        "cart": "Cart",
+        "login": "Login",
+        "register": "Register",
+        "logout": "Logout",
+        "profile": "Profile",
+        "admin": "Admin Panel"
+    },
+    "hero": {
+        "title": "Discover Premium Quality Products",
+        "subtitle": "Explore our curated collection of electronics, fashion, and more",
+        "shop_now": "Shop Now"
+    },
+    "product": {
+        "add_to_cart": "Add to Cart",
+        "price": "Price",
+        "stock": "Stock",
+        "in_stock": "In Stock",
+        "out_of_stock": "Out of Stock",
+        "category": "Category",
+        "description": "Description",
+        "view_details": "View Details"
+    },
+    "auth": {
+        "login_title": "Login to Your Account",
+        "register_title": "Create New Account",
+        "username": "Username",
+        "email": "Email",
+        "password": "Password",
+        "confirm_password": "Confirm Password",
+        "login_button": "Login",
+        "register_button": "Register",
+        "forgot_password": "Forgot Password?",
+        "no_account": "Don't have an account?",
+        "have_account": "Already have an account?",
+        "show_password": "Show Password",
+        "hide_password": "Hide Password"
+    },
+    "admin": {
+        "dashboard": "Admin Dashboard",
+        "products": "Products Management",
+        "categories": "Categories Management",
+        "orders": "Orders Management",
+        "users": "Users Management",
+        "add_product": "Add Product",
+        "edit_product": "Edit Product",
+        "delete_product": "Delete Product",
+        "add_category": "Add Category",
+        "product_name": "Product Name",
+        "product_description": "Product Description",
+        "product_price": "Product Price",
+        "product_stock": "Product Stock",
+        "product_image": "Product Image",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit"
+    },
+    "profile": {
+        "title": "My Profile",
+        "my_orders": "My Orders",
+        "order_history": "Order History",
+        "settings": "Settings",
+        "logout": "Logout"
+    },
+    "cart": {
+        "title": "Shopping Cart",
+        "empty": "Your cart is empty",
+        "total": "Total",
+        "checkout": "Checkout",
+        "continue_shopping": "Continue Shopping",
+        "remove": "Remove",
+        "quantity": "Quantity"
+    },
+    "search": {
+        "placeholder": "Search products...",
+        "no_results": "No products found",
+        "filter": "Filter",
+        "sort": "Sort",
+        "all_categories": "All Categories"
+    },
+    "messages": {
+        "loading": "Loading...",
+        "success": "Success!",
+        "error": "Error occurred",
+        "login_required": "Please login to continue",
+        "login_success": "Login successful!",
+        "register_success": "Registration successful!",
+        "product_added": "Product added to cart",
+        "password_mismatch": "Passwords do not match",
+        "fill_all_fields": "Please fill all fields"
+    },
+    "footer": {
+        "about": "About Us",
+        "contact": "Contact",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service",
+        "copyright": "© 2025 Jadaa Emart. All rights reserved."
+    }
+}
