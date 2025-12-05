@@ -106,6 +106,62 @@ app.get("/api/promote", async (req, res) => {
     }
 });
 
+// AUTO SETUP ADMIN - Just visit this URL to create admin account
+app.get("/api/setup-admin", async (req, res) => {
+    if (!db) return res.status(500).json({ message: "Database not loaded" });
+
+    try {
+        const bcrypt = require('bcryptjs');
+
+        // Admin credentials
+        const adminData = {
+            username: 'admin',
+            email: 'admin@jadaaemart.com',
+            password: 'Admin@123',
+            full_name: 'Administrator',
+            role: 'admin'
+        };
+
+        // Check if admin already exists
+        const existingAdmin = await db.User.findOne({
+            where: { username: adminData.username }
+        });
+
+        if (existingAdmin) {
+            return res.json({
+                message: "Admin user already exists!",
+                username: adminData.username,
+                email: existingAdmin.email,
+                note: "Use these credentials to login",
+                login_url: "/login.html"
+            });
+        }
+
+        // Create admin user
+        await db.User.create({
+            username: adminData.username,
+            email: adminData.email,
+            password: bcrypt.hashSync(adminData.password, 8),
+            full_name: adminData.full_name,
+            role: 'admin'
+        });
+
+        res.json({
+            message: "✅ Admin user created successfully!",
+            username: adminData.username,
+            password: adminData.password,
+            email: adminData.email,
+            note: "Save these credentials and login at /login.html",
+            login_url: "/login.html"
+        });
+    } catch (err) {
+        res.status(500).json({
+            message: "Error creating admin",
+            error: err.message
+        });
+    }
+});
+
 // Seeding Route (Populate Data)
 app.get("/api/seed", async (req, res) => {
     if (!db) return res.status(500).json({ message: "Database not loaded" });
